@@ -38,18 +38,24 @@ final class GroceriesViewModel: ObservableObject {
     }
     
     private func fetchProducts() {
+        state = .loading
+        
         fetchGroceriesUseCase.fetchGroceries {[weak self] result in
             guard let self else { return }
-            switch result {
-            case .success(let groceries):
-                self.products = groceries
-                groceries.forEach {
-                    if !self.categories.contains($0.category) {
-                        self.categories.append($0.category)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let groceries):
+                    self.products = groceries
+                    groceries.forEach {
+                        if !self.categories.contains($0.category) {
+                            self.categories.append($0.category)
+                        }
                     }
+                    self.state = .loaded
+                case .failure(let error):
+                    self.effect = .showError(error)
+                    self.state = .error(error)
                 }
-            case .failure(let error):
-                print(error)
             }
         }
     }

@@ -21,7 +21,7 @@ struct GroceriesScreen: View {
             ProgressView()
         case .loaded:
             contentView
-        case .error(let error):
+        case .error(_):
             ErrorView()
         }
     }
@@ -29,13 +29,15 @@ struct GroceriesScreen: View {
 
 extension GroceriesScreen {
     var contentView: some View {
-        List {
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 16),
-                GridItem(.flexible(), spacing: 16)
-            ], spacing: 16) {
-                ForEach(0..<groceriesViewModel.categories.count, id: \.self) { index in
-                    CategoryItemView(category: groceriesViewModel.categories[index])
+        VStack {
+            List {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 16),
+                    GridItem(.flexible(), spacing: 16)
+                ], spacing: 16) {
+                    ForEach(0..<groceriesViewModel.categories.count, id: \.self) { index in
+                        CategoryItemView(category: groceriesViewModel.categories[index])
+                    }
                 }
             }
         }
